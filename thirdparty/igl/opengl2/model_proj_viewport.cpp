@@ -10,15 +10,14 @@
 
 template <typename Derivedmodel, typename Derivedproj, typename Derivedviewport>
 IGL_INLINE void igl::opengl2::model_proj_viewport(
-    Eigen::PlainObjectBase<Derivedmodel> & model,
-    Eigen::PlainObjectBase<Derivedproj> & proj,
-    Eigen::PlainObjectBase<Derivedviewport> & viewport)
-{
-  Eigen::Matrix4d MV,P;
+    Eigen::PlainObjectBase<Derivedmodel> &model,
+    Eigen::PlainObjectBase<Derivedproj> &proj,
+    Eigen::PlainObjectBase<Derivedviewport> &viewport) {
+  Eigen::Matrix4d MV, P;
   Eigen::Vector4i VPi;
-  glGetDoublev(GL_MODELVIEW_MATRIX,MV.data());
-  glGetDoublev(GL_PROJECTION_MATRIX,P.data());
-  glGetIntegerv(GL_VIEWPORT,VPi.data());
+  glGetDoublev(GL_MODELVIEW_MATRIX, MV.data());
+  glGetDoublev(GL_PROJECTION_MATRIX, P.data());
+  glGetIntegerv(GL_VIEWPORT, VPi.data());
   viewport = VPi.cast<typename Derivedviewport::Scalar>();
   model = MV.cast<typename Derivedmodel::Scalar>();
   proj = P.cast<typename Derivedproj::Scalar>();
@@ -26,6 +25,18 @@ IGL_INLINE void igl::opengl2::model_proj_viewport(
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template specialization
-template void igl::opengl2::model_proj_viewport<Eigen::Matrix<double, 4, 4, 0, 4, 4>, Eigen::Matrix<double, 4, 4, 0, 4, 4>, Eigen::Matrix<double, 4, 1, 0, 4, 1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, 4, 4, 0, 4, 4> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, 4, 4, 0, 4, 4> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, 4, 1, 0, 4, 1> >&);
-template void igl::opengl2::model_proj_viewport<Eigen::Matrix<float, 4, 4, 0, 4, 4>, Eigen::Matrix<float, 4, 4, 0, 4, 4>, Eigen::Matrix<float, 4, 1, 0, 4, 1> >(Eigen::PlainObjectBase<Eigen::Matrix<float, 4, 4, 0, 4, 4> >&, Eigen::PlainObjectBase<Eigen::Matrix<float, 4, 4, 0, 4, 4> >&, Eigen::PlainObjectBase<Eigen::Matrix<float, 4, 1, 0, 4, 1> >&);
+template void
+igl::opengl2::model_proj_viewport<Eigen::Matrix<double, 4, 4, 0, 4, 4>,
+                                  Eigen::Matrix<double, 4, 4, 0, 4, 4>,
+                                  Eigen::Matrix<double, 4, 1, 0, 4, 1>>(
+    Eigen::PlainObjectBase<Eigen::Matrix<double, 4, 4, 0, 4, 4>> &,
+    Eigen::PlainObjectBase<Eigen::Matrix<double, 4, 4, 0, 4, 4>> &,
+    Eigen::PlainObjectBase<Eigen::Matrix<double, 4, 1, 0, 4, 1>> &);
+template void
+igl::opengl2::model_proj_viewport<Eigen::Matrix<float, 4, 4, 0, 4, 4>,
+                                  Eigen::Matrix<float, 4, 4, 0, 4, 4>,
+                                  Eigen::Matrix<float, 4, 1, 0, 4, 1>>(
+    Eigen::PlainObjectBase<Eigen::Matrix<float, 4, 4, 0, 4, 4>> &,
+    Eigen::PlainObjectBase<Eigen::Matrix<float, 4, 4, 0, 4, 4>> &,
+    Eigen::PlainObjectBase<Eigen::Matrix<float, 4, 1, 0, 4, 1>> &);
 #endif

@@ -10,20 +10,18 @@
 #include <vector>
 
 template <typename DerivedV, typename DerivedF>
-IGL_INLINE void igl::grad(const Eigen::PlainObjectBase<DerivedV>&V,
-                     const Eigen::PlainObjectBase<DerivedF>&F,
-                    Eigen::SparseMatrix<typename DerivedV::Scalar> &G)
-{
-  Eigen::PlainObjectBase<DerivedV > eperp21, eperp13;
-  eperp21.resize(F.rows(),3);
-  eperp13.resize(F.rows(),3);
+IGL_INLINE void igl::grad(const Eigen::PlainObjectBase<DerivedV> &V,
+                          const Eigen::PlainObjectBase<DerivedF> &F,
+                          Eigen::SparseMatrix<typename DerivedV::Scalar> &G) {
+  Eigen::PlainObjectBase<DerivedV> eperp21, eperp13;
+  eperp21.resize(F.rows(), 3);
+  eperp13.resize(F.rows(), 3);
 
-  for (int i=0;i<F.rows();++i)
-  {
+  for (int i = 0; i < F.rows(); ++i) {
     // renaming indices of vertices of triangles for convenience
-    int i1 = F(i,0);
-    int i2 = F(i,1);
-    int i3 = F(i,2);
+    int i1 = F(i, 0);
+    int i2 = F(i, 1);
+    int i3 = F(i, 2);
 
     // #F x 3 matrices of triangle edge vectors, named after opposite vertices
     Eigen::Matrix<typename DerivedV::Scalar, 1, 3> v32 = V.row(i3) - V.row(i2);
@@ -32,7 +30,7 @@ IGL_INLINE void igl::grad(const Eigen::PlainObjectBase<DerivedV>&V,
 
     // area of parallelogram is twice area of triangle
     // area of parallelogram is || v1 x v2 ||
-    Eigen::Matrix<typename DerivedV::Scalar, 1, 3> n  = v32.cross(v13);
+    Eigen::Matrix<typename DerivedV::Scalar, 1, 3> n = v32.cross(v13);
 
     // This does correct l2 norm of rows, so that it contains #F list of twice
     // triangle areas
@@ -45,66 +43,99 @@ IGL_INLINE void igl::grad(const Eigen::PlainObjectBase<DerivedV>&V,
     double norm21 = std::sqrt(v21.dot(v21));
     double norm13 = std::sqrt(v13.dot(v13));
     eperp21.row(i) = u.cross(v21);
-    eperp21.row(i) = eperp21.row(i) / std::sqrt(eperp21.row(i).dot(eperp21.row(i)));
+    eperp21.row(i) =
+        eperp21.row(i) / std::sqrt(eperp21.row(i).dot(eperp21.row(i)));
     eperp21.row(i) *= norm21 / dblA;
     eperp13.row(i) = u.cross(v13);
-    eperp13.row(i) = eperp13.row(i) / std::sqrt(eperp13.row(i).dot(eperp13.row(i)));
+    eperp13.row(i) =
+        eperp13.row(i) / std::sqrt(eperp13.row(i).dot(eperp13.row(i)));
     eperp13.row(i) *= norm13 / dblA;
   }
 
   std::vector<int> rs;
-  rs.reserve(F.rows()*4*3);
+  rs.reserve(F.rows() * 4 * 3);
   std::vector<int> cs;
-  cs.reserve(F.rows()*4*3);
+  cs.reserve(F.rows() * 4 * 3);
   std::vector<double> vs;
-  vs.reserve(F.rows()*4*3);
+  vs.reserve(F.rows() * 4 * 3);
 
   // row indices
-  for(int r=0;r<3;r++)
-  {
-    for(int j=0;j<4;j++)
-    {
-      for(int i=r*F.rows();i<(r+1)*F.rows();i++) rs.push_back(i);
+  for (int r = 0; r < 3; r++) {
+    for (int j = 0; j < 4; j++) {
+      for (int i = r * F.rows(); i < (r + 1) * F.rows(); i++)
+        rs.push_back(i);
     }
   }
 
   // column indices
-  for(int r=0;r<3;r++)
-  {
-    for(int i=0;i<F.rows();i++) cs.push_back(F(i,1));
-    for(int i=0;i<F.rows();i++) cs.push_back(F(i,0));
-    for(int i=0;i<F.rows();i++) cs.push_back(F(i,2));
-    for(int i=0;i<F.rows();i++) cs.push_back(F(i,0));
+  for (int r = 0; r < 3; r++) {
+    for (int i = 0; i < F.rows(); i++)
+      cs.push_back(F(i, 1));
+    for (int i = 0; i < F.rows(); i++)
+      cs.push_back(F(i, 0));
+    for (int i = 0; i < F.rows(); i++)
+      cs.push_back(F(i, 2));
+    for (int i = 0; i < F.rows(); i++)
+      cs.push_back(F(i, 0));
   }
 
   // values
-  for(int i=0;i<F.rows();i++) vs.push_back(eperp13(i,0));
-  for(int i=0;i<F.rows();i++) vs.push_back(-eperp13(i,0));
-  for(int i=0;i<F.rows();i++) vs.push_back(eperp21(i,0));
-  for(int i=0;i<F.rows();i++) vs.push_back(-eperp21(i,0));
-  for(int i=0;i<F.rows();i++) vs.push_back(eperp13(i,1));
-  for(int i=0;i<F.rows();i++) vs.push_back(-eperp13(i,1));
-  for(int i=0;i<F.rows();i++) vs.push_back(eperp21(i,1));
-  for(int i=0;i<F.rows();i++) vs.push_back(-eperp21(i,1));
-  for(int i=0;i<F.rows();i++) vs.push_back(eperp13(i,2));
-  for(int i=0;i<F.rows();i++) vs.push_back(-eperp13(i,2));
-  for(int i=0;i<F.rows();i++) vs.push_back(eperp21(i,2));
-  for(int i=0;i<F.rows();i++) vs.push_back(-eperp21(i,2));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(eperp13(i, 0));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(-eperp13(i, 0));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(eperp21(i, 0));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(-eperp21(i, 0));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(eperp13(i, 1));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(-eperp13(i, 1));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(eperp21(i, 1));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(-eperp21(i, 1));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(eperp13(i, 2));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(-eperp13(i, 2));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(eperp21(i, 2));
+  for (int i = 0; i < F.rows(); i++)
+    vs.push_back(-eperp21(i, 2));
 
   // create sparse gradient operator matrix
-  G.resize(3*F.rows(),V.rows());
-  std::vector<Eigen::Triplet<typename DerivedV::Scalar> > triplets;
-  for (int i=0;i<(int)vs.size();++i)
-  {
-    triplets.push_back(Eigen::Triplet<typename DerivedV::Scalar>(rs[i],cs[i],vs[i]));
+  G.resize(3 * F.rows(), V.rows());
+  std::vector<Eigen::Triplet<typename DerivedV::Scalar>> triplets;
+  for (int i = 0; i < (int)vs.size(); ++i) {
+    triplets.push_back(
+        Eigen::Triplet<typename DerivedV::Scalar>(rs[i], cs[i], vs[i]));
   }
   G.setFromTriplets(triplets.begin(), triplets.end());
 }
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template specialization
-// template void igl::grad<double, int>(Eigen::Matrix<double, -1, -1, 0, -1,-1> const&, Eigen::Matrix<int, -1, -1, 0, -1, -1> const&,Eigen::SparseMatrix<double, 0, int>&);
-template void igl::grad<Eigen::Matrix<double, -1, 3, 0, -1, 3>, Eigen::Matrix<int, -1, 3, 0, -1, 3> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 0, -1, 3> > const&, Eigen::SparseMatrix<Eigen::Matrix<double, -1, 3, 0, -1, 3>::Scalar, 0, int>&);
-//template void igl::grad<Eigen::Matrix<double, -1, 3, 0, -1, 3>, Eigen::Matrix<int, -1, 3, 0, -1, 3> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 0, -1, 3> > const&, Eigen::SparseMatrix<Eigen::Matrix<double, -1, 3, 0, -1, 3>::Scalar, 0, int>&);
-template void igl::grad<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&, Eigen::SparseMatrix<Eigen::Matrix<double, -1, -1, 0, -1, -1>::Scalar, 0, int>&);
+// template void igl::grad<double, int>(Eigen::Matrix<double, -1, -1, 0, -1,-1>
+// const&, Eigen::Matrix<int, -1, -1, 0, -1, -1>
+// const&,Eigen::SparseMatrix<double, 0, int>&);
+template void igl::grad<Eigen::Matrix<double, -1, 3, 0, -1, 3>,
+                        Eigen::Matrix<int, -1, 3, 0, -1, 3>>(
+    Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3>> const &,
+    Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 0, -1, 3>> const &,
+    Eigen::SparseMatrix<Eigen::Matrix<double, -1, 3, 0, -1, 3>::Scalar, 0, int>
+        &);
+// template void igl::grad<Eigen::Matrix<double, -1, 3, 0, -1, 3>,
+// Eigen::Matrix<int, -1, 3, 0, -1, 3>
+// >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&,
+// Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 0, -1, 3> > const&,
+// Eigen::SparseMatrix<Eigen::Matrix<double, -1, 3, 0, -1, 3>::Scalar, 0,
+// int>&);
+template void igl::grad<Eigen::Matrix<double, -1, -1, 0, -1, -1>,
+                        Eigen::Matrix<int, -1, -1, 0, -1, -1>>(
+    Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1>> const &,
+    Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1>> const &,
+    Eigen::SparseMatrix<Eigen::Matrix<double, -1, -1, 0, -1, -1>::Scalar, 0,
+                        int> &);
 #endif

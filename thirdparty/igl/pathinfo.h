@@ -11,54 +11,50 @@
 
 #include <string>
 
-namespace igl
-{
-  //// Decided not to use these
-  //const int PATHINFO_DIRNAME 01
-  //const int PATHINFO_BASENAME 02
-  //const int PATHINFO_EXTENSION 04
-  //const int PATHINFO_FILENAME 08
+namespace igl {
+//// Decided not to use these
+// const int PATHINFO_DIRNAME 01
+// const int PATHINFO_BASENAME 02
+// const int PATHINFO_EXTENSION 04
+// const int PATHINFO_FILENAME 08
 
-  // Function like PHP's pathinfo
-  //  returns information about path
-  // Input:
-  //  path  string containing input path
-  // Outputs:
-  //  dirname  string containing dirname (see dirname.h)
-  //  basename  string containing basename (see basename.h)
-  //  extension  string containing extension (characters after last '.')
-  //  filename  string containing filename (characters of basename before last
-  //    '.')
-  //
-  //
-  // Examples:
-  //
-  // input                     | dirname        basename       ext    filename
-  // "/"                       | "/"            ""             ""     ""
-  // "//"                      | "/"            ""             ""     ""
-  // "/foo"                    | "/"            "foo"          ""     "foo"
-  // "/foo/"                   | "/"            "foo"          ""     "foo"
-  // "/foo//"                  | "/"            "foo"          ""     "foo"
-  // "/foo/./"                 | "/foo"         "."            ""     ""
-  // "/foo/bar"                | "/foo"         "bar"          ""     "bar"
-  // "/foo/bar."               | "/foo"         "bar."         ""     "bar"
-  // "/foo/bar.txt"            | "/foo"         "bar.txt"      "txt"  "bar"
-  // "/foo/bar.txt.zip"        | "/foo"         "bar.txt.zip"  "zip"  "bar.txt"
-  // "/foo/bar.dir/"           | "/foo"         "bar.dir"      "dir"  "bar"
-  // "/foo/bar.dir/file"       | "/foo/bar.dir" "file"         ""     "file"
-  // "/foo/bar.dir/file.txt"   | "/foo/bar.dir" "file.txt"     "txt"  "file"
-  //  See also: basename, dirname
-  IGL_INLINE void pathinfo(
-    const std::string & path,
-    std::string & dirname,
-    std::string & basename,
-    std::string & extension,
-    std::string & filename);
+// Function like PHP's pathinfo
+//  returns information about path
+// Input:
+//  path  string containing input path
+// Outputs:
+//  dirname  string containing dirname (see dirname.h)
+//  basename  string containing basename (see basename.h)
+//  extension  string containing extension (characters after last '.')
+//  filename  string containing filename (characters of basename before last
+//    '.')
+//
+//
+// Examples:
+//
+// input                     | dirname        basename       ext    filename
+// "/"                       | "/"            ""             ""     ""
+// "//"                      | "/"            ""             ""     ""
+// "/foo"                    | "/"            "foo"          ""     "foo"
+// "/foo/"                   | "/"            "foo"          ""     "foo"
+// "/foo//"                  | "/"            "foo"          ""     "foo"
+// "/foo/./"                 | "/foo"         "."            ""     ""
+// "/foo/bar"                | "/foo"         "bar"          ""     "bar"
+// "/foo/bar."               | "/foo"         "bar."         ""     "bar"
+// "/foo/bar.txt"            | "/foo"         "bar.txt"      "txt"  "bar"
+// "/foo/bar.txt.zip"        | "/foo"         "bar.txt.zip"  "zip"  "bar.txt"
+// "/foo/bar.dir/"           | "/foo"         "bar.dir"      "dir"  "bar"
+// "/foo/bar.dir/file"       | "/foo/bar.dir" "file"         ""     "file"
+// "/foo/bar.dir/file.txt"   | "/foo/bar.dir" "file.txt"     "txt"  "file"
+//  See also: basename, dirname
+IGL_INLINE void pathinfo(const std::string &path, std::string &dirname,
+                         std::string &basename, std::string &extension,
+                         std::string &filename);
 
-}
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "pathinfo.cpp"
+#include "pathinfo.cpp"
 #endif
 
 #endif

@@ -15,40 +15,40 @@
 
 struct NVGcontext;
 
-namespace igl
-{
-namespace viewer
-{
+namespace igl {
+namespace viewer {
 
-  class TextRenderer
-  {
-  public:
-    IGL_INLINE TextRenderer();
+class TextRenderer {
+public:
+  IGL_INLINE TextRenderer();
 
-    IGL_INLINE virtual int Init();
-    IGL_INLINE virtual int Shut();
+  IGL_INLINE virtual int Init();
+  IGL_INLINE virtual int Shut();
 
-    IGL_INLINE void BeginDraw(const Eigen::Matrix4f &view,const Eigen::Matrix4f &proj,
-      const Eigen::Vector4f &_viewport,float _object_scale);
+  IGL_INLINE void BeginDraw(const Eigen::Matrix4f &view,
+                            const Eigen::Matrix4f &proj,
+                            const Eigen::Vector4f &_viewport,
+                            float _object_scale);
 
-    IGL_INLINE void EndDraw();
+  IGL_INLINE void EndDraw();
 
-    IGL_INLINE void DrawText(Eigen::Vector3d pos,Eigen::Vector3d normal,const std::string &text);
+  IGL_INLINE void DrawText(Eigen::Vector3d pos, Eigen::Vector3d normal,
+                           const std::string &text);
 
-  protected:
-    std::map<std::string,void *> m_textObjects;
-    Eigen::Matrix4f view_matrix,proj_matrix;
-    Eigen::Vector4f viewport;
-    float object_scale;
-    float mPixelRatio;
-    NVGcontext *ctx;
-  };
+protected:
+  std::map<std::string, void *> m_textObjects;
+  Eigen::Matrix4f view_matrix, proj_matrix;
+  Eigen::Vector4f viewport;
+  float object_scale;
+  float mPixelRatio;
+  NVGcontext *ctx;
+};
 
-}
-}
+} // namespace viewer
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "TextRenderer.cpp"
+#include "TextRenderer.cpp"
 #endif
 
 #endif

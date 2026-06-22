@@ -11,28 +11,34 @@
 #include "triangle_triangle_adjacency.h"
 
 template <typename DerivedV, typename DerivedF>
-IGL_INLINE std::vector<bool> igl::is_border_vertex(
-    const Eigen::PlainObjectBase<DerivedV> &V, 
-    const Eigen::PlainObjectBase<DerivedF> &F)
-{
+IGL_INLINE std::vector<bool>
+igl::is_border_vertex(const Eigen::PlainObjectBase<DerivedV> &V,
+                      const Eigen::PlainObjectBase<DerivedF> &F) {
   Eigen::PlainObjectBase<DerivedF> FF;
-  igl::triangle_triangle_adjacency(V,F,FF);
+  igl::triangle_triangle_adjacency(V, F, FF);
   std::vector<bool> ret(V.rows());
-  for(unsigned i=0; i<ret.size();++i)
+  for (unsigned i = 0; i < ret.size(); ++i)
     ret[i] = false;
 
-  for(unsigned i=0; i<F.rows();++i)
-    for(unsigned j=0;j<F.cols();++j)
-      if(FF(i,j) == -1)
-      {
-        ret[F(i,j)]       = true;
-        ret[F(i,(j+1)%F.cols())] = true;
+  for (unsigned i = 0; i < F.rows(); ++i)
+    for (unsigned j = 0; j < F.cols(); ++j)
+      if (FF(i, j) == -1) {
+        ret[F(i, j)] = true;
+        ret[F(i, (j + 1) % F.cols())] = true;
       }
   return ret;
 }
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template specialization
-template std::vector<bool, std::allocator<bool> > igl::is_border_vertex<Eigen::Matrix<double, -1, 3, 0, -1, 3>, Eigen::Matrix<int, -1, 3, 0, -1, 3> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 0, -1, 3> > const&);
-template std::vector<bool, std::allocator<bool> > igl::is_border_vertex<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> > const&, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> > const&);
+template std::vector<bool, std::allocator<bool>>
+igl::is_border_vertex<Eigen::Matrix<double, -1, 3, 0, -1, 3>,
+                      Eigen::Matrix<int, -1, 3, 0, -1, 3>>(
+    Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 3, 0, -1, 3>> const &,
+    Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 3, 0, -1, 3>> const &);
+template std::vector<bool, std::allocator<bool>>
+igl::is_border_vertex<Eigen::Matrix<double, -1, -1, 0, -1, -1>,
+                      Eigen::Matrix<int, -1, -1, 0, -1, -1>>(
+    Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1>> const &,
+    Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1>> const &);
 #endif

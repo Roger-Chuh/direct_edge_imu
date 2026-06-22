@@ -11,29 +11,28 @@
 
 #include <Eigen/Dense>
 
-namespace igl
-{
-  // Refine the mesh by adding the barycenter of each face
-  // Inputs:
-  //   V       #V by 3 coordinates of the vertices
-  //   F       #F by 3 list of mesh faces (must be triangles)
-  // Outputs:
-  //   VD      #V + #F by 3 coordinate of the vertices of the dual mesh
-  //           The added vertices are added at the end of VD (should not be
-  //           same references as (V,F)
-  //   FD      #F*3 by 3 faces of the dual mesh
-  //
-  template <typename Scalar, typename Index>
-  IGL_INLINE void false_barycentric_subdivision(
-    const Eigen::PlainObjectBase<Scalar> & V,
-    const Eigen::PlainObjectBase<Index> & F,
-    Eigen::PlainObjectBase<Scalar> & VD,
-    Eigen::PlainObjectBase<Index> & FD);
+namespace igl {
+// Refine the mesh by adding the barycenter of each face
+// Inputs:
+//   V       #V by 3 coordinates of the vertices
+//   F       #F by 3 list of mesh faces (must be triangles)
+// Outputs:
+//   VD      #V + #F by 3 coordinate of the vertices of the dual mesh
+//           The added vertices are added at the end of VD (should not be
+//           same references as (V,F)
+//   FD      #F*3 by 3 faces of the dual mesh
+//
+template <typename Scalar, typename Index>
+IGL_INLINE void
+false_barycentric_subdivision(const Eigen::PlainObjectBase<Scalar> &V,
+                              const Eigen::PlainObjectBase<Index> &F,
+                              Eigen::PlainObjectBase<Scalar> &VD,
+                              Eigen::PlainObjectBase<Index> &FD);
 
-}
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "false_barycentric_subdivision.cpp"
+#include "false_barycentric_subdivision.cpp"
 #endif
 
 #endif

@@ -11,34 +11,35 @@
 #include <cstdio>
 #include <vector>
 
-namespace igl
-{
-  template <typename Scalar, typename Index>
-  IGL_INLINE Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> barycentric_to_global(
-    const Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> & V,
-    const Eigen::Matrix<Index,Eigen::Dynamic,Eigen::Dynamic>  & F,
-    const Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> & bc)
-  {
-    Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> R;
-    R.resize(bc.rows(),3);
+namespace igl {
+template <typename Scalar, typename Index>
+IGL_INLINE Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>
+barycentric_to_global(
+    const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> &V,
+    const Eigen::Matrix<Index, Eigen::Dynamic, Eigen::Dynamic> &F,
+    const Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> &bc) {
+  Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> R;
+  R.resize(bc.rows(), 3);
 
-    for (unsigned i=0; i<R.rows(); ++i)
-    {
-      unsigned id = round(bc(i,0));
-      double u   = bc(i,1);
-      double v   = bc(i,2);
+  for (unsigned i = 0; i < R.rows(); ++i) {
+    unsigned id = round(bc(i, 0));
+    double u = bc(i, 1);
+    double v = bc(i, 2);
 
-      if (id != -1)
-        R.row(i) = V.row(F(id,0)) +
-                  ((V.row(F(id,1)) - V.row(F(id,0))) * u +
-                   (V.row(F(id,2)) - V.row(F(id,0))) * v  );
-      else
-        R.row(i) << 0,0,0;
-    }
-    return R;
+    if (id != -1)
+      R.row(i) = V.row(F(id, 0)) + ((V.row(F(id, 1)) - V.row(F(id, 0))) * u +
+                                    (V.row(F(id, 2)) - V.row(F(id, 0))) * v);
+    else
+      R.row(i) << 0, 0, 0;
   }
+  return R;
 }
+} // namespace igl
 
 #ifdef IGL_STATIC_LIBRARY
-template Eigen::Matrix<double, -1, -1, 0, -1, -1> igl::barycentric_to_global<double, int>(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::Matrix<int, -1, -1, 0, -1, -1> const&, Eigen::Matrix<double, -1, -1, 0, -1, -1> const&);
+template Eigen::Matrix<double, -1, -1, 0, -1, -1>
+igl::barycentric_to_global<double, int>(
+    Eigen::Matrix<double, -1, -1, 0, -1, -1> const &,
+    Eigen::Matrix<int, -1, -1, 0, -1, -1> const &,
+    Eigen::Matrix<double, -1, -1, 0, -1, -1> const &);
 #endif

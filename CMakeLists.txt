@@ -8,7 +8,7 @@ project(edge_imu_bias)
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS} -g -fopenmp -Wall -mavx -ffast-math -std=c++11 -Ofast -pipe -mtune=native")
 
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS} -g -fopenmp -Wall -mavx -ffast-math -Ofast -pipe -mtune=native")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS} -g -fopenmp -Wall -mavx -ffast-math -Ofast -pipe")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SSE_FLAGS} -g -fopenmp -Wall -mavx -Ofast -pipe")
 set(CMAKE_CXX_STANDARD 17)
 #SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SSE_FLAGS} -g -fopenmp -Ofast -mtune=native -pipe -Wall")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SSE_FLAGS} -g -fopenmp -Ofast -pipe -Wall")
@@ -34,6 +34,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(libvisensor 1.1.0 REQUIRED)
+find_package(visensor_node REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(X11 REQUIRED)
 find_package(Ceres REQUIRED)
@@ -60,12 +61,14 @@ include_directories(
   ${EIGEN_INCLUDE_DIR}
   ${CERES_INCLUDE_DIRS}
   ${libvisensor_INCLUDE_DIRS}
+  ${visensor_node_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_SOURCE_DIR}/thirdparty/
 )
 
 set(LIBS
     ${OpenCV_LIBS}
+    ${visensor_node_LIBRARIES}
     ${catkin_LIBRARIES}
     ${CERES_LIBRARIES}
     ${libvisensor_LIBRARIES}

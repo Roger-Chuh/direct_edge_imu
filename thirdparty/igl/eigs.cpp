@@ -1,25 +1,18 @@
 #include "eigs.h"
 
-#include "read_triangle_mesh.h"
 #include "cotmatrix.h"
-#include "sort.h"
-#include "slice.h"
 #include "massmatrix.h"
+#include "read_triangle_mesh.h"
+#include "slice.h"
+#include "sort.h"
 #include <iostream>
 
-template <
-  typename Atype,
-  typename Btype,
-  typename DerivedU,
-  typename DerivedS>
-IGL_INLINE bool igl::eigs(
-  const Eigen::SparseMatrix<Atype> & A,
-  const Eigen::SparseMatrix<Btype> & iB,
-  const size_t k,
-  const EigsType type,
-  Eigen::PlainObjectBase<DerivedU> & sU,
-  Eigen::PlainObjectBase<DerivedS> & sS)
-{
+template <typename Atype, typename Btype, typename DerivedU, typename DerivedS>
+IGL_INLINE bool igl::eigs(const Eigen::SparseMatrix<Atype> &A,
+                          const Eigen::SparseMatrix<Btype> &iB, const size_t k,
+                          const EigsType type,
+                          Eigen::PlainObjectBase<DerivedU> &sU,
+                          Eigen::PlainObjectBase<DerivedS> &sS) {
   using namespace Eigen;
   using namespace std;
   const size_t n = A.rows();
@@ -27,26 +20,26 @@ IGL_INLINE bool igl::eigs(
   assert(iB.rows() == n && "B should be match A's dims.");
   assert(iB.cols() == n && "B should be square.");
   assert(type == EIGS_TYPE_SM && "Only low frequencies are supported");
-  DerivedU U(n,k);
-  DerivedS S(k,1);
+  DerivedU U(n, k);
+  DerivedS S(k, 1);
   typedef Atype Scalar;
-  typedef Eigen::Matrix<typename DerivedU::Scalar,DerivedU::RowsAtCompileTime,1> VectorXS;
+  typedef Eigen::Matrix<typename DerivedU::Scalar, DerivedU::RowsAtCompileTime,
+                        1>
+      VectorXS;
   // Rescale B for better numerics
   const Scalar rescale = std::abs(iB.diagonal().maxCoeff());
-  const Eigen::SparseMatrix<Btype> B = iB/rescale;
+  const Eigen::SparseMatrix<Btype> B = iB / rescale;
 
   Scalar tol = 1e-4;
   Scalar conv = 1e-14;
   int max_iter = 100;
   int i = 0;
-  while(true)
-  {
+  while (true) {
     // Random initial guess
-    VectorXS y = VectorXS::Random(n,1);
+    VectorXS y = VectorXS::Random(n, 1);
     Scalar eff_sigma = 0;
-    if(i>0)
-    {
-      eff_sigma = 1e-8+std::abs(S(i-1));
+    if (i > 0) {
+      eff_sigma = 1e-8 + std::abs(S(i - 1));
     }
     // whether to use rayleigh quotient method
     bool ray = false;
@@ -54,97 +47,85 @@ IGL_INLINE bool igl::eigs(
     int iter;
     Scalar sigma = std::numeric_limits<Scalar>::infinity();
     VectorXS x;
-    for(iter = 0;iter<max_iter;iter++)
-    {
-      if(i>0 && !ray)
-      {
+    for (iter = 0; iter < max_iter; iter++) {
+      if (i > 0 && !ray) {
         // project-out existing modes
-        for(int j = 0;j<i;j++)
-        {
+        for (int j = 0; j < i; j++) {
           const VectorXS u = U.col(j);
-          y = (y - u*u.dot(B*y)/u.dot(B * u)).eval();
+          y = (y - u * u.dot(B * y) / u.dot(B * u)).eval();
         }
       }
       // normalize
-      x = y/sqrt(y.dot(B*y));
+      x = y / sqrt(y.dot(B * y));
 
       // current guess at eigen value
-      sigma = x.dot(A*x)/x.dot(B*x);
-      //x *= sigma>0?1.:-1.;
+      sigma = x.dot(A * x) / x.dot(B * x);
+      // x *= sigma>0?1.:-1.;
 
       Scalar err_prev = err;
-      err = (A*x-sigma*B*x).array().abs().maxCoeff();
-      if(err<conv)
-      {
+      err = (A * x - sigma * B * x).array().abs().maxCoeff();
+      if (err < conv) {
         break;
       }
-      if(ray || err<tol)
-      {
+      if (ray || err < tol) {
         eff_sigma = sigma;
         ray = true;
       }
 
-      Scalar tikhonov = std::abs(eff_sigma)<1e-12?1e-10:0;
-      switch(type)
-      {
+      Scalar tikhonov = std::abs(eff_sigma) < 1e-12 ? 1e-10 : 0;
+      switch (type) {
+      default:
+        assert(false && "Not supported");
+        break;
+      case EIGS_TYPE_SM: {
+        SimplicialLDLT<SparseMatrix<Scalar>> solver;
+        const SparseMatrix<Scalar> C = A - eff_sigma * B + tikhonov * B;
+        // mw.save(C,"C");
+        // mw.save(eff_sigma,"eff_sigma");
+        // mw.save(tikhonov,"tikhonov");
+        solver.compute(C);
+        switch (solver.info()) {
+        case Eigen::Success:
+          break;
+        case Eigen::NumericalIssue:
+          cerr << "Error: Numerical issue." << endl;
+          return false;
         default:
-          assert(false && "Not supported");
-          break;
-        case EIGS_TYPE_SM:
-        {
-          SimplicialLDLT<SparseMatrix<Scalar> > solver;
-          const SparseMatrix<Scalar> C = A-eff_sigma*B+tikhonov*B;
-          //mw.save(C,"C");
-          //mw.save(eff_sigma,"eff_sigma");
-          //mw.save(tikhonov,"tikhonov");
-          solver.compute(C);
-          switch(solver.info())
-          {
-            case Eigen::Success:
-              break;
-            case Eigen::NumericalIssue:
-              cerr<<"Error: Numerical issue."<<endl;
-              return false;
-            default:
-              cerr<<"Error: Other."<<endl;
-              return false;
-          }
-          const VectorXS rhs = B*x;
-          y = solver.solve(rhs);
-          //mw.save(rhs,"rhs");
-          //mw.save(y,"y");
-          //mw.save(x,"x");
-          //mw.write("eigs.mat");
-          //if(i == 1)
-          //return false;
-          break;
+          cerr << "Error: Other." << endl;
+          return false;
         }
+        const VectorXS rhs = B * x;
+        y = solver.solve(rhs);
+        // mw.save(rhs,"rhs");
+        // mw.save(y,"y");
+        // mw.save(x,"x");
+        // mw.write("eigs.mat");
+        // if(i == 1)
+        // return false;
+        break;
+      }
       }
     }
-    if(iter == max_iter)
-    {
-      cerr<<"Failed to converge."<<endl;
+    if (iter == max_iter) {
+      cerr << "Failed to converge." << endl;
       return false;
     }
-    if(i==0 || (S.head(i).array()-sigma).abs().maxCoeff()>1e-14)
-    {
+    if (i == 0 || (S.head(i).array() - sigma).abs().maxCoeff() > 1e-14) {
       U.col(i) = x;
       S(i) = sigma;
       i++;
-      if(i == k)
-      {
+      if (i == k) {
         break;
       }
-    }else
-    {
+    } else {
       // restart with new random guess.
-      cout<<"RESTART!"<<endl;
+      cout << "RESTART!" << endl;
     }
   }
   // finally sort
   VectorXi I;
-  igl::sort(S,1,false,sS,I);
-  sU = igl::slice(U,I,2);
+  igl::sort(S, 1, false, sS, I);
+  sU = igl::slice(U, I, 2);
   sS /= rescale;
   sU /= sqrt(rescale);
   return true;
@@ -152,5 +133,11 @@ IGL_INLINE bool igl::eigs(
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template specialization
-template bool igl::eigs<double, double, Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<double, -1, 1, 0, -1, 1> >(Eigen::SparseMatrix<double, 0, int> const&, Eigen::SparseMatrix<double, 0, int> const&, unsigned long, igl::EigsType, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1> >&, Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1> >&);
+template bool
+igl::eigs<double, double, Eigen::Matrix<double, -1, -1, 0, -1, -1>,
+          Eigen::Matrix<double, -1, 1, 0, -1, 1>>(
+    Eigen::SparseMatrix<double, 0, int> const &,
+    Eigen::SparseMatrix<double, 0, int> const &, unsigned long, igl::EigsType,
+    Eigen::PlainObjectBase<Eigen::Matrix<double, -1, -1, 0, -1, -1>> &,
+    Eigen::PlainObjectBase<Eigen::Matrix<double, -1, 1, 0, -1, 1>> &);
 #endif

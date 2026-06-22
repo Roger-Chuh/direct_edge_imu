@@ -11,26 +11,26 @@
 #include "igl/igl_inline.h"
 #include <Eigen/Core>
 
-namespace igl
-{
-  // Compute the dot product between each row of A and B
-  // Templates:
-  //   DerivedV derived from vertex positions matrix type: i.e. MatrixXd
-  // Inputs:
-  //   A  eigen matrix r by c
-  //   B  eigen matrix r by c
-  // Returns:
-  //   d a column vector with r entries that contains the dot product of each corresponding row of A and B
-  //
-  template <typename DerivedV>
-  IGL_INLINE Eigen::PlainObjectBase<DerivedV> dot_row(
-    const Eigen::PlainObjectBase<DerivedV>& A,
-    const Eigen::PlainObjectBase<DerivedV>& B);
+namespace igl {
+// Compute the dot product between each row of A and B
+// Templates:
+//   DerivedV derived from vertex positions matrix type: i.e. MatrixXd
+// Inputs:
+//   A  eigen matrix r by c
+//   B  eigen matrix r by c
+// Returns:
+//   d a column vector with r entries that contains the dot product of each
+//   corresponding row of A and B
+//
+template <typename DerivedV>
+IGL_INLINE Eigen::PlainObjectBase<DerivedV>
+dot_row(const Eigen::PlainObjectBase<DerivedV> &A,
+        const Eigen::PlainObjectBase<DerivedV> &B);
 
-}
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "dot_row.cpp"
+#include "dot_row.cpp"
 #endif
 
 #endif

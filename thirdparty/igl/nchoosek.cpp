@@ -6,67 +6,60 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at http://mozilla.org/MPL/2.0/.
 #include "nchoosek.h"
-#include <cmath>
 #include <cassert>
+#include <cmath>
 
-IGL_INLINE double igl::nchoosek(const int n, const int k)
-{
-  if(k>n/2)
-  {
-    return nchoosek(n,n-k);
-  }else if(k==1)
-  {
+IGL_INLINE double igl::nchoosek(const int n, const int k) {
+  if (k > n / 2) {
+    return nchoosek(n, n - k);
+  } else if (k == 1) {
     return n;
-  }else
-  {
+  } else {
     double c = 1;
-    for(int i = 1;i<=k;i++)
-    {
-      c *= (((double)n-k+i)/((double)i));
+    for (int i = 1; i <= k; i++) {
+      c *= (((double)n - k + i) / ((double)i));
     }
     return std::round(c);
   }
 }
 
-template < typename DerivedV, typename DerivedU>
-IGL_INLINE void igl::nchoosek(
-  const Eigen::PlainObjectBase<DerivedV> & V,
-  const int k,
-  Eigen::PlainObjectBase<DerivedU> & U)
-{
+template <typename DerivedV, typename DerivedU>
+IGL_INLINE void igl::nchoosek(const Eigen::PlainObjectBase<DerivedV> &V,
+                              const int k,
+                              Eigen::PlainObjectBase<DerivedU> &U) {
   using namespace Eigen;
-  if(V.size() == 0)
-  {
-    U.resize(0,k);
+  if (V.size() == 0) {
+    U.resize(0, k);
     return;
   }
   assert((V.cols() == 1 || V.rows() == 1) && "V must be a vector");
-  U.resize(nchoosek(V.size(),k),k);
-  int running_i  = 0;
+  U.resize(nchoosek(V.size(), k), k);
+  int running_i = 0;
   int running_j = 0;
-  Matrix<typename DerivedU::Scalar,1,Dynamic> running(1,k);
+  Matrix<typename DerivedU::Scalar, 1, Dynamic> running(1, k);
   int N = V.size();
-  const std::function<void(int,int)> doCombs =
-    [&running,&N,&doCombs,&running_i,&running_j,&U,&V](int offset, int k)
-  {
-    if(k==0)
-    {
+  const std::function<void(int, int)> doCombs = [&running, &N, &doCombs,
+                                                 &running_i, &running_j, &U,
+                                                 &V](int offset, int k) {
+    if (k == 0) {
       U.row(running_i) = running;
       running_i++;
       return;
     }
-    for (int i = offset; i <= N - k; ++i)
-    {
+    for (int i = offset; i <= N - k; ++i) {
       running(running_j) = V(i);
       running_j++;
-      doCombs(i+1,k-1);
+      doCombs(i + 1, k - 1);
       running_j--;
     }
   };
-  doCombs(0,k);
+  doCombs(0, k);
 }
 
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template specialization
-template void igl::nchoosek<Eigen::Matrix<int, -1, 1, 0, -1, 1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1> > const&, int, Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1> >&);
+template void igl::nchoosek<Eigen::Matrix<int, -1, 1, 0, -1, 1>,
+                            Eigen::Matrix<int, -1, -1, 0, -1, -1>>(
+    Eigen::PlainObjectBase<Eigen::Matrix<int, -1, 1, 0, -1, 1>> const &, int,
+    Eigen::PlainObjectBase<Eigen::Matrix<int, -1, -1, 0, -1, -1>> &);
 #endif

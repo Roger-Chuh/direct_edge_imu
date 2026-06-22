@@ -14,28 +14,27 @@
 #include <vector>
 
 namespace igl {
-  //todo
-  /// Given 2 vectors centered on origin calculate the rotation matrix from first to the second
+// todo
+/// Given 2 vectors centered on origin calculate the rotation matrix from first
+/// to the second
 
-  // Inputs:
-  //   v0, v1         the two #3 by 1 vectors
-  //   normalized     boolean, if false, then the vectors are normalized prior to the calculation
-  // Output:
-  //                  3 by 3 rotation matrix that takes v0 to v1
-  //
+// Inputs:
+//   v0, v1         the two #3 by 1 vectors
+//   normalized     boolean, if false, then the vectors are normalized prior to
+//   the calculation
+// Output:
+//                  3 by 3 rotation matrix that takes v0 to v1
+//
 
-  IGL_INLINE void n_polyvector(const Eigen::MatrixXd& V,
-                               const Eigen::MatrixXi& F,
-                               const Eigen::VectorXi& b,
-                               const Eigen::MatrixXd& bc,
-                               Eigen::MatrixXd &output);
+IGL_INLINE void n_polyvector(const Eigen::MatrixXd &V, const Eigen::MatrixXi &F,
+                             const Eigen::VectorXi &b,
+                             const Eigen::MatrixXd &bc,
+                             Eigen::MatrixXd &output);
 
-};
-
+}; // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
 #include "n_polyvector.cpp"
 #endif
-
 
 #endif /* defined(IGL_N_POLYVECTOR) */

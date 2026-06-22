@@ -8,20 +8,18 @@
 #ifndef IGL_VIEWER_OPENGL_STATE_H
 #define IGL_VIEWER_OPENGL_STATE_H
 
-// Coverts mesh data inside a igl::viewer::ViewerData class in an OpenGL compatible format
-// The class includes a shader and the opengl calls to plot the data
+// Coverts mesh data inside a igl::viewer::ViewerData class in an OpenGL
+// compatible format The class includes a shader and the opengl calls to plot
+// the data
 
 #include <igl/igl_inline.h>
 #include <igl/viewer/OpenGL_shader.h>
 #include <igl/viewer/ViewerData.h>
 
-namespace igl
-{
-namespace viewer
-{
+namespace igl {
+namespace viewer {
 
-class OpenGL_state
-{
+class OpenGL_state {
 public:
   typedef unsigned int GLuint;
 
@@ -32,14 +30,14 @@ public:
   OpenGL_shader shader_overlay_lines;
   OpenGL_shader shader_overlay_points;
 
-  GLuint vbo_V; // Vertices of the current mesh (#V x 3)
-  GLuint vbo_V_uv; // UV coordinates for the current mesh (#V x 2)
-  GLuint vbo_V_normals; // Vertices of the current mesh (#V x 3)
-  GLuint vbo_V_ambient; // Ambient material  (#V x 3)
-  GLuint vbo_V_diffuse; // Diffuse material  (#V x 3)
+  GLuint vbo_V;          // Vertices of the current mesh (#V x 3)
+  GLuint vbo_V_uv;       // UV coordinates for the current mesh (#V x 2)
+  GLuint vbo_V_normals;  // Vertices of the current mesh (#V x 3)
+  GLuint vbo_V_ambient;  // Ambient material  (#V x 3)
+  GLuint vbo_V_diffuse;  // Diffuse material  (#V x 3)
   GLuint vbo_V_specular; // Specular material  (#V x 3)
 
-  GLuint vbo_F; // Faces of the mesh (#F x 3)
+  GLuint vbo_F;   // Faces of the mesh (#F x 3)
   GLuint vbo_tex; // Texture
 
   GLuint vbo_lines_F;         // Indices of the line overlay
@@ -63,7 +61,7 @@ public:
 
   int tex_u;
   int tex_v;
-  Eigen::Matrix<char,Eigen::Dynamic,1> tex;
+  Eigen::Matrix<char, Eigen::Dynamic, 1> tex;
 
   Eigen::Matrix<unsigned, Eigen::Dynamic, Eigen::Dynamic> F_vbo;
   Eigen::Matrix<unsigned, Eigen::Dynamic, Eigen::Dynamic> lines_F_vbo;
@@ -82,7 +80,8 @@ public:
   IGL_INLINE void init_buffers();
 
   // Update contents from a 'Data' instance
-  IGL_INLINE void set_data(const igl::viewer::ViewerData &data, bool invert_normals);
+  IGL_INLINE void set_data(const igl::viewer::ViewerData &data,
+                           bool invert_normals);
 
   // Bind the underlying OpenGL buffer objects for subsequent mesh draw calls
   IGL_INLINE void bind_mesh();
@@ -90,13 +89,15 @@ public:
   /// Draw the currently buffered mesh (either solid or wireframe)
   IGL_INLINE void draw_mesh(bool solid);
 
-  // Bind the underlying OpenGL buffer objects for subsequent line overlay draw calls
+  // Bind the underlying OpenGL buffer objects for subsequent line overlay draw
+  // calls
   IGL_INLINE void bind_overlay_lines();
 
   /// Draw the currently buffered line overlay
   IGL_INLINE void draw_overlay_lines();
 
-  // Bind the underlying OpenGL buffer objects for subsequent point overlay draw calls
+  // Bind the underlying OpenGL buffer objects for subsequent point overlay draw
+  // calls
   IGL_INLINE void bind_overlay_points();
 
   /// Draw the currently buffered point overlay
@@ -104,14 +105,13 @@ public:
 
   // Release the OpenGL buffer objects
   IGL_INLINE void free_buffers();
-
 };
 
-}
-}
+} // namespace viewer
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "OpenGL_state.cpp"
+#include "OpenGL_state.cpp"
 #endif
 
 #endif

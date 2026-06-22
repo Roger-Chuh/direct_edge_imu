@@ -14,25 +14,26 @@
 #include <vector>
 
 namespace igl {
-  // Converts a face-based polyvector field consisting of n vectors per face
-  // from its 3D coordinates to its local 2D representation (with respect to the
-  // local bases of each triangle)
+// Converts a face-based polyvector field consisting of n vectors per face
+// from its 3D coordinates to its local 2D representation (with respect to the
+// local bases of each triangle)
 
-  // Inputs:
-  //   B1               #F by 3 list of the first basis vector of each triangle
-  //   B2               #F by 3 list of the second basis vector of each triangle
-  //   global           #F by 3n list of the 3D coordinates of the per-face vectors
-  //                    (stacked horizontally for each triangle)
-  // Output:
-  //   local            #F by 2n list of the 2D representation of the per-face vectors
-  //                    (stacked horizontally for each triangle)
-  //
+// Inputs:
+//   B1               #F by 3 list of the first basis vector of each triangle
+//   B2               #F by 3 list of the second basis vector of each triangle
+//   global           #F by 3n list of the 3D coordinates of the per-face
+//   vectors
+//                    (stacked horizontally for each triangle)
+// Output:
+//   local            #F by 2n list of the 2D representation of the per-face
+//   vectors
+//                    (stacked horizontally for each triangle)
+//
 template <typename DerivedG, typename DerivedL, typename DerivedB>
-IGL_INLINE void global2local(
-const Eigen::PlainObjectBase<DerivedB>& B1,
-const Eigen::PlainObjectBase<DerivedB>& B2,
-const Eigen::PlainObjectBase<DerivedG>& global,
-Eigen::PlainObjectBase<DerivedL>& local);
+IGL_INLINE void global2local(const Eigen::PlainObjectBase<DerivedB> &B1,
+                             const Eigen::PlainObjectBase<DerivedB> &B2,
+                             const Eigen::PlainObjectBase<DerivedG> &global,
+                             Eigen::PlainObjectBase<DerivedL> &local);
 
 // Converts a face-based polyvector field consisting of n vectors per face
 // from its local 2D representation (with respect to the local bases of each
@@ -41,25 +42,24 @@ Eigen::PlainObjectBase<DerivedL>& local);
 // Inputs:
 //   B1               #F by 3 list of the first basis vector of each triangle
 //   B2               #F by 3 list of the second basis vector of each triangle
-//   local            #F by 2n list of the 2D representation of the per-face vectors
+//   local            #F by 2n list of the 2D representation of the per-face
+//   vectors
 //                    (stacked horizontally for each triangle)
 // Output:
-//   global           #F by 3n list of the 3D coordinates of the per-face vectors
+//   global           #F by 3n list of the 3D coordinates of the per-face
+//   vectors
 //                    (stacked horizontally for each triangle)
 //
 template <typename DerivedG, typename DerivedL, typename DerivedB>
-IGL_INLINE void local2global(
-const Eigen::PlainObjectBase<DerivedB>& B1,
-const Eigen::PlainObjectBase<DerivedB>& B2,
-const Eigen::PlainObjectBase<DerivedL>& local,
-Eigen::PlainObjectBase<DerivedG>& global);
+IGL_INLINE void local2global(const Eigen::PlainObjectBase<DerivedB> &B1,
+                             const Eigen::PlainObjectBase<DerivedB> &B2,
+                             const Eigen::PlainObjectBase<DerivedL> &local,
+                             Eigen::PlainObjectBase<DerivedG> &global);
 
-};
-
+}; // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
 #include "field_local_global_conversions.cpp"
 #endif
-
 
 #endif /* defined(IGL_FIELD_LOCAL_GLOBAL_CONVERSIONS) */

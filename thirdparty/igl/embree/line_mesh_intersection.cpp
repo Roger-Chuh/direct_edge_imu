@@ -11,18 +11,13 @@
 #include <cstdio>
 #include <vector>
 
-#include <igl/per_vertex_normals.h>
 #include <igl/embree/EmbreeIntersector.h>
+#include <igl/per_vertex_normals.h>
 
 template <typename ScalarMatrix, typename IndexMatrix>
-IGL_INLINE ScalarMatrix igl::embree::line_mesh_intersection
-(
- const ScalarMatrix & V_source,
- const ScalarMatrix  & N_source,
- const ScalarMatrix & V_target,
- const IndexMatrix  & F_target
-)
-{
+IGL_INLINE ScalarMatrix igl::embree::line_mesh_intersection(
+    const ScalarMatrix &V_source, const ScalarMatrix &N_source,
+    const ScalarMatrix &V_target, const IndexMatrix &F_target) {
 
   double tol = 0.00001;
 
@@ -35,27 +30,27 @@ IGL_INLINE ScalarMatrix igl::embree::line_mesh_intersection
 
   // Initialize embree
   EmbreeIntersector embree;
-  embree.init(V_target.template cast<float>(),F_target.template cast<int>());
+  embree.init(V_target.template cast<float>(), F_target.template cast<int>());
 
   // Shoot rays from the source to the target
-  for (unsigned i=0; i<ray_pos.rows(); ++i)
-  {
-    igl::embree::Hit A,B;
+  for (unsigned i = 0; i < ray_pos.rows(); ++i) {
+    igl::embree::Hit A, B;
     // Shoot ray A
     Eigen::RowVector3d A_pos = ray_pos.row(i) + tol * ray_dir.row(i);
     Eigen::RowVector3d A_dir = -ray_dir.row(i);
 
-    bool A_hit = embree.intersectBeam(A_pos.cast<float>(), A_dir.cast<float>(),A);
+    bool A_hit =
+        embree.intersectBeam(A_pos.cast<float>(), A_dir.cast<float>(), A);
 
     Eigen::RowVector3d B_pos = ray_pos.row(i) - tol * ray_dir.row(i);
     Eigen::RowVector3d B_dir = ray_dir.row(i);
 
-    bool B_hit = embree.intersectBeam(B_pos.cast<float>(), B_dir.cast<float>(),B);
-
+    bool B_hit =
+        embree.intersectBeam(B_pos.cast<float>(), B_dir.cast<float>(), B);
 
     int choice = -1;
 
-    if (A_hit && ! B_hit)
+    if (A_hit && !B_hit)
       choice = 0;
     else if (!A_hit && B_hit)
       choice = 1;
@@ -72,13 +67,17 @@ IGL_INLINE ScalarMatrix igl::embree::line_mesh_intersection
       temp << B.id, B.u, B.v;
 
     R.row(i) = temp;
-
   }
 
   return R;
-
 }
 
 #ifdef IGL_STATIC_LIBRARY
-template Eigen::Matrix<double, -1, -1, 0, -1, -1> igl::embree::line_mesh_intersection<Eigen::Matrix<double, -1, -1, 0, -1, -1>, Eigen::Matrix<int, -1, -1, 0, -1, -1> >(Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::Matrix<double, -1, -1, 0, -1, -1> const&, Eigen::Matrix<int, -1, -1, 0, -1, -1> const&);
+template Eigen::Matrix<double, -1, -1, 0, -1, -1>
+igl::embree::line_mesh_intersection<Eigen::Matrix<double, -1, -1, 0, -1, -1>,
+                                    Eigen::Matrix<int, -1, -1, 0, -1, -1>>(
+    Eigen::Matrix<double, -1, -1, 0, -1, -1> const &,
+    Eigen::Matrix<double, -1, -1, 0, -1, -1> const &,
+    Eigen::Matrix<double, -1, -1, 0, -1, -1> const &,
+    Eigen::Matrix<int, -1, -1, 0, -1, -1> const &);
 #endif

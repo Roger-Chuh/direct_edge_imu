@@ -8,22 +8,19 @@
 #ifndef IGL_VIEWER_VIEWER_CORE_H
 #define IGL_VIEWER_VIEWER_CORE_H
 
+#include <igl/viewer/OpenGL_state.h>
 #include <igl/viewer/TextRenderer.h>
 #include <igl/viewer/ViewerData.h>
-#include <igl/viewer/OpenGL_state.h>
 
 #include <igl/igl_inline.h>
 
-namespace igl
-{
-namespace viewer
-{
+namespace igl {
+namespace viewer {
 
 // Basic class of the 3D mesh viewer
 // TODO: write documentation
 
-class ViewerCore
-{
+class ViewerCore {
 public:
   IGL_INLINE ViewerCore();
 
@@ -36,32 +33,27 @@ public:
   // Serialization code
   IGL_INLINE void InitSerialization();
 
-
   // ------------------- Camera control functions
 
   // Adjust the view to see the entire model
-  IGL_INLINE void align_camera_center(
-    const Eigen::MatrixXd& V,
-    const Eigen::MatrixXi& F);
+  IGL_INLINE void align_camera_center(const Eigen::MatrixXd &V,
+                                      const Eigen::MatrixXi &F);
 
   // Determines how much to zoom and shift such that the mesh fills the unit
   // box (centered at the origin)
-  IGL_INLINE void get_scale_and_shift_to_fit_mesh(
-    const Eigen::MatrixXd& V,
-    const Eigen::MatrixXi& F,
-    float & zoom,
-    Eigen::Vector3f& shift);
+  IGL_INLINE void get_scale_and_shift_to_fit_mesh(const Eigen::MatrixXd &V,
+                                                  const Eigen::MatrixXi &F,
+                                                  float &zoom,
+                                                  Eigen::Vector3f &shift);
 
-    // Adjust the view to see the entire model
-    IGL_INLINE void align_camera_center(
-      const Eigen::MatrixXd& V);
+  // Adjust the view to see the entire model
+  IGL_INLINE void align_camera_center(const Eigen::MatrixXd &V);
 
-    // Determines how much to zoom and shift such that the mesh fills the unit
-    // box (centered at the origin)
-    IGL_INLINE void get_scale_and_shift_to_fit_mesh(
-      const Eigen::MatrixXd& V,
-      float & zoom,
-      Eigen::Vector3f& shift);
+  // Determines how much to zoom and shift such that the mesh fills the unit
+  // box (centered at the origin)
+  IGL_INLINE void get_scale_and_shift_to_fit_mesh(const Eigen::MatrixXd &V,
+                                                  float &zoom,
+                                                  Eigen::Vector3f &shift);
 
   // ------------------- Drawing functions
 
@@ -69,14 +61,14 @@ public:
   IGL_INLINE void clear_framebuffers();
 
   // Draw everything
-  IGL_INLINE void draw(ViewerData& data, OpenGL_state& opengl, bool update_matrices = true);
-  IGL_INLINE void draw_buffer(ViewerData& data,
-                              OpenGL_state& opengl,
-                              bool update_matrices,
-                              Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic>& R,
-                              Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic>& G,
-                              Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic>& B,
-                              Eigen::Matrix<unsigned char,Eigen::Dynamic,Eigen::Dynamic>& A);
+  IGL_INLINE void draw(ViewerData &data, OpenGL_state &opengl,
+                       bool update_matrices = true);
+  IGL_INLINE void
+  draw_buffer(ViewerData &data, OpenGL_state &opengl, bool update_matrices,
+              Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> &R,
+              Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> &G,
+              Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> &B,
+              Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> &A);
 
   // ------------------- Properties
 
@@ -95,8 +87,7 @@ public:
   float lighting_factor;
 
   // Trackball angle (quaternion)
-  enum RotationType
-  {
+  enum RotationType {
     ROTATION_TYPE_TRACKBALL = 0,
     ROTATION_TYPE_TWO_AXIS_VALUATOR_FIXED_UP = 1,
     NUM_ROTATION_TYPES = 2
@@ -146,19 +137,21 @@ public:
   // Viewport size
   Eigen::Vector4f viewport;
 
-  // Save the OpenGL transformation matrices used for the previous rendering pass
+  // Save the OpenGL transformation matrices used for the previous rendering
+  // pass
   Eigen::Matrix4f view;
   Eigen::Matrix4f model;
   Eigen::Matrix4f proj;
-  public:
-      EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
-}
-}
+} // namespace viewer
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "ViewerCore.cpp"
+#include "ViewerCore.cpp"
 #endif
 
 #endif

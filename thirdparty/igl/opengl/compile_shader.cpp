@@ -9,19 +9,18 @@
 #include "report_gl_error.h"
 #include <iostream>
 
-IGL_INLINE GLuint igl::opengl::compile_shader(const GLint type, const char * str)
-{
+IGL_INLINE GLuint igl::opengl::compile_shader(const GLint type,
+                                              const char *str) {
   GLuint id = glCreateShader(type);
   report_gl_error("glCreateShader: ");
-  glShaderSource(id,1,&str,NULL);
+  glShaderSource(id, 1, &str, NULL);
   report_gl_error("glShaderSource: ");
   glCompileShader(id);
   report_gl_error("glCompileShader: ");
 
   GLint status;
   glGetShaderiv(id, GL_COMPILE_STATUS, &status);
-  if (status != GL_TRUE)
-  {
+  if (status != GL_TRUE) {
     char buffer[512];
     if (type == GL_VERTEX_SHADER)
       std::cerr << "Vertex shader:" << std::endl;

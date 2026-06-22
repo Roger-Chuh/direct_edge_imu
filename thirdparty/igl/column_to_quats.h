@@ -12,23 +12,22 @@
 #include <Eigen/Geometry>
 #include <Eigen/StdVector>
 #include <vector>
-namespace igl
-{
-  // "Columnize" a list of quaternions (q1x,q1y,q1z,q1w,q2x,q2y,q2z,q2w,...)
-  //
-  // Inputs:
-  //   Q  n*4-long list of coefficients
-  // Outputs:
-  //   vQ  n-long list of quaternions
-  // Returns false if n%4!=0
-  IGL_INLINE bool column_to_quats(
-    const Eigen::VectorXd & Q,
-    std::vector<
-      Eigen::Quaterniond,Eigen::aligned_allocator<Eigen::Quaterniond> > & vQ);
-}
+namespace igl {
+// "Columnize" a list of quaternions (q1x,q1y,q1z,q1w,q2x,q2y,q2z,q2w,...)
+//
+// Inputs:
+//   Q  n*4-long list of coefficients
+// Outputs:
+//   vQ  n-long list of quaternions
+// Returns false if n%4!=0
+IGL_INLINE bool
+column_to_quats(const Eigen::VectorXd &Q,
+                std::vector<Eigen::Quaterniond,
+                            Eigen::aligned_allocator<Eigen::Quaterniond>> &vQ);
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "column_to_quats.cpp"
+#include "column_to_quats.cpp"
 #endif
 
 #endif

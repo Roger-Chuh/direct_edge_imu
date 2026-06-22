@@ -7,18 +7,15 @@
 // obtain one at http://mozilla.org/MPL/2.0/.
 
 #include "rotate_vectors.h"
-IGL_INLINE Eigen::MatrixXd igl::rotate_vectors(
-                    const Eigen::MatrixXd& V,
-                    const Eigen::VectorXd& A,
-                    const Eigen::MatrixXd& B1,
-                    const Eigen::MatrixXd& B2)
-{
-  Eigen::MatrixXd RV(V.rows(),V.cols());
+IGL_INLINE Eigen::MatrixXd igl::rotate_vectors(const Eigen::MatrixXd &V,
+                                               const Eigen::VectorXd &A,
+                                               const Eigen::MatrixXd &B1,
+                                               const Eigen::MatrixXd &B2) {
+  Eigen::MatrixXd RV(V.rows(), V.cols());
 
-  for (unsigned i=0; i<V.rows();++i)
-  {
+  for (unsigned i = 0; i < V.rows(); ++i) {
     // project onto the tangent plane and convert to angle
-    double a = atan2(B2.row(i).dot(V.row(i)),B1.row(i).dot(V.row(i)));
+    double a = atan2(B2.row(i).dot(V.row(i)), B1.row(i).dot(V.row(i)));
 
     // rotate
     a += (A.size() == 1) ? A(0) : A(i);

@@ -8,14 +8,13 @@
 #include "project.h"
 
 template <typename Scalar>
-Eigen::Matrix<Scalar,3,1> igl::project(
-  const    Eigen::Matrix<Scalar,3,1>&  obj,
-  const    Eigen::Matrix<Scalar,4,4>& model,
-  const    Eigen::Matrix<Scalar,4,4>& proj,
-  const    Eigen::Matrix<Scalar,4,1>&  viewport)
-{
-  Eigen::Matrix<Scalar,4,1> tmp;
-  tmp << obj,1;
+Eigen::Matrix<Scalar, 3, 1>
+igl::project(const Eigen::Matrix<Scalar, 3, 1> &obj,
+             const Eigen::Matrix<Scalar, 4, 4> &model,
+             const Eigen::Matrix<Scalar, 4, 4> &proj,
+             const Eigen::Matrix<Scalar, 4, 1> &viewport) {
+  Eigen::Matrix<Scalar, 4, 1> tmp;
+  tmp << obj, 1;
 
   tmp = model * tmp;
 
@@ -29,9 +28,16 @@ Eigen::Matrix<Scalar,3,1> igl::project(
   return tmp.head(3);
 }
 
-
 #ifdef IGL_STATIC_LIBRARY
 // Explicit template specialization
-template Eigen::Matrix<double, 3, 1, 0, 3, 1> igl::project<double>(Eigen::Matrix<double, 3, 1, 0, 3, 1> const&, Eigen::Matrix<double, 4, 4, 0, 4, 4> const&, Eigen::Matrix<double, 4, 4, 0, 4, 4> const&, Eigen::Matrix<double, 4, 1, 0, 4, 1> const&);
-template Eigen::Matrix<float, 3, 1, 0, 3, 1> igl::project<float>(Eigen::Matrix<float, 3, 1, 0, 3, 1> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 4, 0, 4, 4> const&, Eigen::Matrix<float, 4, 1, 0, 4, 1> const&);
+template Eigen::Matrix<double, 3, 1, 0, 3, 1>
+igl::project<double>(Eigen::Matrix<double, 3, 1, 0, 3, 1> const &,
+                     Eigen::Matrix<double, 4, 4, 0, 4, 4> const &,
+                     Eigen::Matrix<double, 4, 4, 0, 4, 4> const &,
+                     Eigen::Matrix<double, 4, 1, 0, 4, 1> const &);
+template Eigen::Matrix<float, 3, 1, 0, 3, 1>
+igl::project<float>(Eigen::Matrix<float, 3, 1, 0, 3, 1> const &,
+                    Eigen::Matrix<float, 4, 4, 0, 4, 4> const &,
+                    Eigen::Matrix<float, 4, 4, 0, 4, 4> const &,
+                    Eigen::Matrix<float, 4, 1, 0, 4, 1> const &);
 #endif

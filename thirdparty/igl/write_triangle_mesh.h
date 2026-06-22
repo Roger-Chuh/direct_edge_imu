@@ -12,30 +12,28 @@
 #include <Eigen/Core>
 #include <string>
 
-namespace igl
-{
-  // write mesh to a file with automatic detection of file format.  supported:
-  // obj, off, stl, wrl, ply, mesh). 
-  // 
-  // Templates:
-  //   Scalar  type for positions and vectors (will be read as double and cast
-  //     to Scalar)
-  //   Index  type for indices (will be read as int and cast to Index)
-  // Inputs:
-  //   str  path to file
-  //   V  eigen double matrix #V by 3
-  //   F  eigen int matrix #F by 3
-  // Returns true iff success
-  template <typename DerivedV, typename DerivedF>
-  IGL_INLINE bool write_triangle_mesh(
-    const std::string str,
-    const Eigen::PlainObjectBase<DerivedV>& V,
-    const Eigen::PlainObjectBase<DerivedF>& F,
-    const bool ascii = true);
-}
+namespace igl {
+// write mesh to a file with automatic detection of file format.  supported:
+// obj, off, stl, wrl, ply, mesh).
+//
+// Templates:
+//   Scalar  type for positions and vectors (will be read as double and cast
+//     to Scalar)
+//   Index  type for indices (will be read as int and cast to Index)
+// Inputs:
+//   str  path to file
+//   V  eigen double matrix #V by 3
+//   F  eigen int matrix #F by 3
+// Returns true iff success
+template <typename DerivedV, typename DerivedF>
+IGL_INLINE bool write_triangle_mesh(const std::string str,
+                                    const Eigen::PlainObjectBase<DerivedV> &V,
+                                    const Eigen::PlainObjectBase<DerivedF> &F,
+                                    const bool ascii = true);
+} // namespace igl
 
 #ifndef IGL_STATIC_LIBRARY
-#  include "write_triangle_mesh.cpp"
+#include "write_triangle_mesh.cpp"
 #endif
 
 #endif
